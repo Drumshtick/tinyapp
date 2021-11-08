@@ -21,7 +21,7 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  console.log(req.body);
+  urlDatabase[generateRandomString()] = req.body.longURL;
   res.send("OK");
 });
 
