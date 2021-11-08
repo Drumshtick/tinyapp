@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
-
+const lengthOfMiniURL = 6;
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
@@ -18,6 +18,11 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
+});
+
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send("OK");
 });
 
 app.get('/urls.json', (req, res) => {
@@ -40,3 +45,12 @@ app.get('/hello', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+const generateRandomString = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let miniURL = '';
+  for (let i = 0; i < lengthOfMiniURL; i++) {
+    miniURL += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return miniURL;
+};
