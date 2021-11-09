@@ -60,6 +60,13 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+app.post('/urls/:shortURL/updated', (req, res) => {
+  const newLongURL = req.body.longURL;
+  const shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect(`/urls/${shortURL}`);
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
