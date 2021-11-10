@@ -10,9 +10,9 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-      <% if (username) { %>
+      <% if (userObj) { %>
     <form method="POST" action="/logout" class="nav-item row gy-2 gx-3 align-items-center">
-      <p class="col-auto" style="margin: auto;">Logged In As: <%= username %></p>
+      <p class="col-auto" style="margin: auto;">Logged In As: <%= userObj.email %></p>
       <button type="submit" class=" col-auto btn btn-outline-danger" style="margin-right: 0.25em">Logout</button>
       <% } else{ %>
     <form method="POST" action="/login" class="nav-item row gy-2 gx-3 align-items-center">
