@@ -8,7 +8,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 app.set('view engine', 'ejs');
 const lengthOfMiniURL = 6;
-
+/*
+=================================================================================
+************************************Databases************************************
+=================================================================================
+*/
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com'
@@ -26,7 +30,11 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-
+/*
+=================================================================================
+**************************************GET****************************************
+=================================================================================
+*/
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
@@ -74,6 +82,17 @@ app.get('/register', (req, res) => {
   res.render('register', templateVars);
 });
 
+app.get('/login', (req, res) => {
+  const templateVars = {
+    userObj: users[req.cookies.user_id],
+  };
+  res.render('login', templateVars);
+});
+/*
+=================================================================================
+**************************************POST***************************************
+=================================================================================
+*/
 app.post('/urls', (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
@@ -132,7 +151,11 @@ app.post('/register', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
+/*
+=================================================================================
+********************************Helper Functions*********************************
+=================================================================================
+*/
 const generateRandomString = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let miniURL = '';
