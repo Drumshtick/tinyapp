@@ -8,17 +8,13 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls" >My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        <a class="nav-item nav-link" href="/login">Login</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
       </div>
     </div>
       <% if (userObj) { %>
-    <form method="POST" action="/logout" class="nav-item row gy-2 gx-3 align-items-center">
       <p class="col-auto" style="margin: auto;">Logged In As: <%= userObj.email %></p>
-      <button type="submit" class=" col-auto btn btn-outline-danger" style="margin-right: 0.25em">Logout</button>
-      <% } else{ %>
-    <form method="POST" action="/login" class="nav-item row gy-2 gx-3 align-items-center">
-      <input class="form-control col-auto" type="text" name="username" placeholder="username" style="width: 150px; margin-right: 0.25em; display: inline;">
-      <button type="submit" class="col-auto btn btn-primary" style="margin-right: 0.25em">Login</button>
-      <% } %>
-      </form>
+      <form method="POST" action="/logout" class="nav-item row gy-2 gx-3 align-items-center" style="margin-left: 1px"><button type="submit" class=" col-auto btn btn-outline-danger" style="margin-right: 0.25em">Logout</button></form>
+      <% }  %>
   </nav>
 </header>
