@@ -10,9 +10,12 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <form method="POST" action="/login" class="nav-item">
-      <input class="form-control" type="text" name="username" placeholder="username" style="width: 150px; margin-right: 0.25em; display: inline;">
-      <button type="submit" class="btn btn-primary">Sign in</button>
+    <form method="POST" action="/login" class="nav-item row gy-2 gx-3 align-items-center">
+      <% if (username) { %>
+      <p class="col-auto" style="margin: auto;">Logged In As: <%= username %></p>
+      <% } %>
+      <input class="form-control col-auto" type="text" name="username" placeholder="username" style="width: 150px; margin-right: 0.25em; display: inline;">
+      <button type="submit" class=" col-auto btn btn-primary">Sign in</button>
     </form>
   </nav>
 </header>
