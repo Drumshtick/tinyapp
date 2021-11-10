@@ -52,8 +52,12 @@ app.get('/urls.json', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  const templateVars = {userObj: users[req.cookies.user_id],};
-  res.render('urls_new', templateVars);
+  if (req.cookies.user_id === undefined) {
+    res.redirect('/login');
+  } else if (req.cookies.user_id) {
+    const templateVars = {userObj: users[req.cookies.user_id],};
+    res.render('urls_new', templateVars);
+  }
 });
 
 app.get('/urls/:shortURL', (req, res) => {
@@ -93,9 +97,13 @@ app.get('/login', (req, res) => {
 =================================================================================
 */
 app.post('/urls', (req, res) => {
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);
+  if (req.cookies.user_id === undefined) {
+    res.sendStatus(403);
+  } else if (req.cookies.user_id) {
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = req.body.longURL;
+    res.redirect(`/urls/${shortURL}`);
+  }
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
