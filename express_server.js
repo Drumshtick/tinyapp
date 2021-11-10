@@ -110,17 +110,23 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  const userEmail = req.body.email;
-  const userPassword = req.body.password;
-  const userId = generateRandomString();
-  const userObj = {
-    id: userId,
-    email: userEmail,
-    password: userPassword,
-  };
-  users[userId] = userObj;
-  res.cookie('user_id', userId);
-  res.redirect('/urls');
+  if (!req.body.email || !req.body.password) {
+    res.sendStatus(400);
+  } else if (verifyNewEmail(users, req.body.email)) {
+    const userEmail = req.body.email.toLowerCase();
+    const userPassword = req.body.password;
+    const userId = generateRandomString();
+    const userObj = {
+      id: userId,
+      email: userEmail,
+      password: userPassword,
+    };
+    users[userId] = userObj;
+    res.cookie('user_id', userId);
+    res.redirect('/urls');
+  } else if (!verifyNewEmail(users, req.body.email)) {
+    res.sendStatus(400);
+  }
 });
 
 app.listen(PORT, () => {
@@ -134,4 +140,13 @@ const generateRandomString = () => {
     miniURL += chars[Math.floor(Math.random() * chars.length)];
   }
   return miniURL;
+};
+
+const verifyNewEmail = (db, email) => {
+  for (const user in db) {
+    if (db[user]['email'] === email.toLowerCase()) {
+      return false;
+    }
+  }
+  return true;
 };
