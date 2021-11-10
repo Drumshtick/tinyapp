@@ -46,12 +46,16 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  if (req.cookies.user_id === undefined) {
-    res.redirect('/login');
-  } else if (req.cookies.user_id) {
+  const userID = req.cookies.user_id;
+  if (userID === undefined) {
+    const templateVars = {
+      userObj: users[userID],
+    };
+    res.render('my_urls_no_cred', templateVars);
+  } else if (userID) {
     const templateVars = { 
-      userObj: users[req.cookies.user_id],
-      urls: urlDatabase,
+      userObj: users[userID],
+      urls: filterURLsByID(urlDatabase, userID),
     };
     res.render('urls_index', templateVars);
   }
@@ -216,4 +220,14 @@ const getUserID = (database, email) => {
     }
   }
   return null;
+};
+
+const filterURLsByID = (database, id) => {
+  const filtered = {};
+  for (const url in database) {
+    if (database[url].userID === id) {
+      filtered[url] = database[url];
+    }
+  }
+  return filtered;
 };
