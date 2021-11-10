@@ -13,7 +13,7 @@
       <% if (username) { %>
     <form method="POST" action="/logout" class="nav-item row gy-2 gx-3 align-items-center">
       <p class="col-auto" style="margin: auto;">Logged In As: <%= username %></p>
-      <button type="submit" class=" col-auto btn btn-primary" style="margin-right: 0.25em">Logout</button>
+      <button type="submit" class=" col-auto btn btn-outline-danger" style="margin-right: 0.25em">Logout</button>
       <% } else{ %>
     <form method="POST" action="/login" class="nav-item row gy-2 gx-3 align-items-center">
       <input class="form-control col-auto" type="text" name="username" placeholder="username" style="width: 150px; margin-right: 0.25em; display: inline;">
