@@ -118,9 +118,21 @@ app.post('/urls/:shortURL/updated', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const username = req.body.username;
-  res.cookie('username', username);
-  res.redirect('/urls');
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
+    res.sendStatus(400);
+  } else if (!verifyNewEmail(users, email)) {
+    const userID = getUserID(users, email);
+    if (users[userID].password === password) {  // users[userID] === undefined ERROR
+      res.cookie('user_id', userID);
+      res.redirect('/urls');
+    } else if (users[userID].password !== password) {
+      res.sendStatus(403);
+    }
+  } else if (verifyNewEmail(users, email)) {
+    res.sendStatus(403);
+  }
 });
 
 app.post('/logout', (req, res) => {
@@ -129,11 +141,13 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  if (!req.body.email || !req.body.password) {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password) {
     res.sendStatus(400);
-  } else if (verifyNewEmail(users, req.body.email)) {
-    const userEmail = req.body.email.toLowerCase();
-    const userPassword = req.body.password;
+  } else if (verifyNewEmail(users, email)) {
+    const userEmail = email.toLowerCase();
+    const userPassword = password;
     const userId = generateRandomString();
     const userObj = {
       id: userId,
@@ -143,7 +157,7 @@ app.post('/register', (req, res) => {
     users[userId] = userObj;
     res.cookie('user_id', userId);
     res.redirect('/urls');
-  } else if (!verifyNewEmail(users, req.body.email)) {
+  } else if (!verifyNewEmail(users, email)) {
     res.sendStatus(400);
   }
 });
@@ -165,11 +179,20 @@ const generateRandomString = () => {
   return miniURL;
 };
 
-const verifyNewEmail = (db, email) => {
-  for (const user in db) {
-    if (db[user]['email'] === email.toLowerCase()) {
+const verifyNewEmail = (database, email) => {
+  for (const user in database) {
+    if (database[user]['email'] === email.toLowerCase()) {
       return false;
     }
   }
   return true;
+};
+
+const getUserID = (database, email) => {
+  for (const user in database) {
+    if (database[user].email === email.toLowerCase()) {
+      return user;
+    }
+  }
+  return null;
 };
