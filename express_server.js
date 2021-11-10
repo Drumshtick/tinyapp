@@ -110,7 +110,6 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  console.log("Users before: ", users);
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   const userId = generateRandomString();
