@@ -28,12 +28,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    password: "123"
   },
- "user2RandomID": {
+  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "asd"
   }
 }
 /*
@@ -46,11 +46,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const templateVars = { 
-    userObj: users[req.cookies.user_id],
-    urls: urlDatabase,
-  };
-  res.render('urls_index', templateVars);
+  if (req.cookies.user_id === undefined) {
+    res.redirect('/login');
+  } else if (req.cookies.user_id) {
+    const templateVars = { 
+      userObj: users[req.cookies.user_id],
+      urls: urlDatabase,
+    };
+    res.render('urls_index', templateVars);
+  }
 });
 
 
@@ -77,7 +81,8 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
+  console.log(urlDatabase[req.params.shortURL]);
+  const longURL = urlDatabase[req.params.shortURL]['longURL'];
   res.redirect(longURL);
 });
 
