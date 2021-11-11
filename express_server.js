@@ -213,13 +213,13 @@ app.post('/logout', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password} = req.body;
   if (!email || !password) {
     res.sendStatus(400);
   } else if (verifyNewEmail(users, email)) {
     const userEmail = email.toLowerCase();
-    const userPassword = password;
+    const userPassword = bcrypt.hashSync(password, 10);
+    console.log(userPassword);
     const userId = generateRandomString();
     const userObj = {
       id: userId,
