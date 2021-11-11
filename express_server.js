@@ -4,7 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-const { generateRandomString, verifyNewEmail, getUserIDByEmail, filterURLsByID } = require('./helper');
+const { generateRandomString, verifyNewEmail, getUserByEmail, filterURLsByID } = require('./helpers');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
@@ -211,7 +211,7 @@ app.post('/login', (req, res) => {
   if (!email || !password) {
     res.sendStatus(400);
   } else if (!verifyNewEmail(users, email)) {
-    const userID = getUserIDByEmail(users, email);
+    const userID = getUserByEmail(users, email);
     const hashMatch = bcrypt.compareSync(password, users[userID].password);
     if (hashMatch) {
       req.session.user_id = userID;

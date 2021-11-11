@@ -21,13 +21,13 @@ const verifyNewEmail = (database, email) => {
   return true;
 };
 
-const getUserIDByEmail = (database, email) => {
+const getUserByEmail = (database, email) => {
   for (const user in database) {
     if (database[user].email === email.toLowerCase()) {
       return user;
     }
   }
-  return null;
+  return undefined;
 };
 
 const filterURLsByID = (database, id) => {
@@ -39,4 +39,4 @@ const filterURLsByID = (database, id) => {
   }
   return filtered;
 };
-module.exports = { generateRandomString, verifyNewEmail, getUserIDByEmail, filterURLsByID };
+module.exports = { generateRandomString, verifyNewEmail, getUserByEmail, filterURLsByID };
