@@ -137,21 +137,48 @@ app.post('/urls', (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
+  const userCookie = req.cookies.user_id;
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    res.sendStatus(404);
+    res.redirect('/urls');
+  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+    res.sendStatus(403);
+    res.redirect('/urls');
+  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
+    const shortURL = req.params.shortURL;
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  }
 });
 
 app.post('/urls/:shortURL/edit', (req, res) => {
-  const shortURL = req.params.shortURL;
-  res.redirect(`/urls/${shortURL}`);
+  const userCookie = req.cookies.user_id;
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    res.sendStatus(404);
+    res.redirect('/urls');
+  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+    res.sendStatus(403);
+    res.redirect('/urls');
+  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
+    const shortURL = req.params.shortURL;
+    res.redirect(`/urls/${shortURL}`);
+  }
 });
 
 app.post('/urls/:shortURL/updated', (req, res) => {
-  const newLongURL = req.body.longURL;
-  const shortURL = req.params.shortURL;
-  urlDatabase[shortURL].longURL = newLongURL;
-  res.redirect(`/urls/${shortURL}`);
+  const userCookie = req.cookies.user_id;
+  if (urlDatabase[req.params.shortURL] === undefined) {
+    res.sendStatus(404);
+    res.redirect('/urls');
+  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+    res.sendStatus(403);
+    res.redirect('/urls');
+  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
+    const newLongURL = req.body.longURL;
+    const shortURL = req.params.shortURL;
+    urlDatabase[shortURL].longURL = newLongURL;
+    res.redirect(`/urls/${shortURL}`);
+  }
 });
 
 app.post('/login', (req, res) => {
