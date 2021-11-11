@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
+const { generateRandomString, verifyNewEmail, getUserIDByEmail, filterURLsByID } = require('./helper');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
@@ -210,7 +211,7 @@ app.post('/login', (req, res) => {
   if (!email || !password) {
     res.sendStatus(400);
   } else if (!verifyNewEmail(users, email)) {
-    const userID = getUserID(users, email);
+    const userID = getUserIDByEmail(users, email);
     const hashMatch = bcrypt.compareSync(password, users[userID].password);
     if (hashMatch) {
       req.session.user_id = userID;
@@ -252,44 +253,3 @@ app.post('/register', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-/*
-=================================================================================
-********************************Helper Functions*********************************
-=================================================================================
-*/
-const generateRandomString = () => {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let miniURL = '';
-  for (let i = 0; i < lengthOfMiniURL; i++) {
-    miniURL += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return miniURL;
-};
-
-const verifyNewEmail = (database, email) => {
-  for (const user in database) {
-    if (database[user]['email'] === email.toLowerCase()) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const getUserID = (database, email) => {
-  for (const user in database) {
-    if (database[user].email === email.toLowerCase()) {
-      return user;
-    }
-  }
-  return null;
-};
-
-const filterURLsByID = (database, id) => {
-  const filtered = {};
-  for (const url in database) {
-    if (database[url].userID === id) {
-      filtered[url] = database[url];
-    }
-  }
-  return filtered;
-};
