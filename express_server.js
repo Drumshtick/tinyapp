@@ -87,11 +87,6 @@ app.get('/urls', (req, res) => {
   }
 });
 
-
-app.get('/urls.json', (req, res) => {
-  res.json(urlDatabase);
-});
-
 app.get('/urls/new', (req, res) => {
   const { user_id } = req.session;
   if (user_id === undefined) {
@@ -129,10 +124,6 @@ app.get('/u/:shortURL', (req, res) => {
   }
   const longURL = urlDatabase[shortURL].longURL;
   res.redirect(addProtocol(longURL));
-});
-
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
 
 app.get('/register', (req, res) => {
