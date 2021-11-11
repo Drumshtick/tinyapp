@@ -77,8 +77,7 @@ app.get('/urls/:shortURL', (req, res) => {
   if (!userCookie) {
     res.redirect('/no_cred')
   } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
-    const templateVars = {userObj: users[userCookie]};
-    res.render('not_auth', templateVars);
+    res.redirect('/not_auth');
   } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
     const templateVars = {
       shortURL: req.params.shortURL,
@@ -111,6 +110,7 @@ app.get('/login', (req, res) => {
   };
   res.render('login', templateVars);
 });
+
 app.get('/no_cred', (req, res) => {
   const userID = req.cookies.user_id;
   const templateVars = {
@@ -118,6 +118,13 @@ app.get('/no_cred', (req, res) => {
   };
   res.render('no_cred', templateVars);
 });
+
+app.get('/not_auth', (req, res) => {
+  const userCookie = req.cookies.user_id;
+  const templateVars = {userObj: users[userCookie]};
+  res.render('not_auth', templateVars);
+});
+
 /*
 =================================================================================
 **1************************************POST***************************************

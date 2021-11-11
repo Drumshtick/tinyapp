@@ -5,9 +5,9 @@
   <header>
     <%- include('partials/_header') %>
   </header>
-  <main style="display: flex; align-items: center;flex-direction: column; padding: 2em;">
-    <h2 style="color: gray;">Please login or register to view My URLs</h2>
-    <div style="display: flex; justify-content: center; margin: 2em;">
+  <main class="card" style="display: flex; align-items: center;flex-direction: column; padding: 0em;">
+    <h2 class="card-header" style="text-align: center; color: gray; width: 100%; margin-left: 0; margin-right: 0;">Please login or register to view My URLs</h2>
+    <div class="card-body" style="display: flex; justify-content: center; margin: 2em;">
       <form method="GET" action="/login" style="margin: 0.5em; padding: 2em;"><button type="submit" class="btn btn-primary">Login</button></form>
       <form method="GET" action="/register" style="margin: 0.5em; padding: 2em; border-left: 2px solid lightgray"><button type="submit" class="btn btn-success">Register</button></form>
     </div>

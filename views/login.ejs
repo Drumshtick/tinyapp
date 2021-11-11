@@ -5,10 +5,12 @@
   <header>
     <%- include('partials/_header') %>
   </header>
-  <main class=".container-sm" style="margin: 1em; display: flex; align-items: center;flex-direction: column;">
-    <h2 style="color: gray">Login</h3>
-    <h4 style="color: gray">Welcome Back</h3>
-    <form method="POST" action="/login" style="margin: 5%; max-width: 400px;">
+  <main class="card" style="display: flex; align-items: center;flex-direction: column;">
+    <div class="card-header" style="width: 100%;">
+      <h2 style="text-align: center; width: 100%; color: gray">Login</h3>
+      <h4 style="text-align: center; width: 100%; color: gray">Welcome Back</h3>
+    </div>
+    <form method="POST" action="/login" class="card-body" style="margin: 5%; max-width: 400px;">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
         <input type="email" name="email" class="form-control" placeholder="jean@example.com" aria-describedby="emailHelp">
