@@ -56,13 +56,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const userID = req.cookies.user_id;
-  if (userID === undefined) {
+  const { user_id } = req.session;
+  if (user_id === undefined) {
     res.redirect('/no_cred');
-  } else if (userID) {
+  } else if (user_id) {
     const templateVars = { 
-      userObj: users[userID],
-      urls: filterURLsByID(urlDatabase, userID),
+      userObj: users[user_id],
+      urls: filterURLsByID(urlDatabase, user_id),
     };
     res.render('urls_index', templateVars);
   }
@@ -74,32 +74,35 @@ app.get('/urls.json', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  if (req.cookies.user_id === undefined) {
+  const { user_id } = req.session;
+  if (user_id === undefined) {
     res.redirect('/login');
-  } else if (req.cookies.user_id) {
-    const templateVars = {userObj: users[req.cookies.user_id],};
+  } else if (user_id) {
+    const templateVars = {userObj: users[user_id],};
     res.render('urls_new', templateVars);
   }
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  const userCookie = req.cookies.user_id;
-  if (!userCookie) {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (!user_id) {
     res.redirect('/no_cred')
-  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+  } else if (user_id !== urlDatabase[shortURL].userID) {
     res.redirect('/not_auth');
-  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
+  } else if (user_id === urlDatabase[shortURL].userID) {
     const templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL].longURL,
-      userObj: users[userCookie],
+      shortURL,
+      longURL: urlDatabase[shortURL].longURL,
+      userObj: users[user_id],
     };
     res.render('urls_show', templateVars);
   }
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL]['longURL'];
+  const { shortURL } = req.params;
+  const longURL = urlDatabase[shortURL]['longURL'];
   res.redirect(longURL);
 });
 
@@ -108,30 +111,32 @@ app.get('/hello', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
+  const { user_id } = req.session;
   const templateVars = {
-    userObj: users[req.cookies.user_id],
+    userObj: users[user_id],
   };
   res.render('register', templateVars);
 });
 
 app.get('/login', (req, res) => {
+  const { user_id } = req.session;
   const templateVars = {
-    userObj: users[req.cookies.user_id],
+    userObj: users[user_id],
   };
   res.render('login', templateVars);
 });
 
 app.get('/no_cred', (req, res) => {
-  const userID = req.cookies.user_id;
+  const { user_id } = req.session;
   const templateVars = {
-    userObj: users[userID],
+    userObj: users[user_id],
   };
   res.render('no_cred', templateVars);
 });
 
 app.get('/not_auth', (req, res) => {
-  const userCookie = req.cookies.user_id;
-  const templateVars = {userObj: users[userCookie]};
+  const { user_id } = req.session;
+  const templateVars = {userObj: users[user_id]};
   res.render('not_auth', templateVars);
 });
 
@@ -141,58 +146,60 @@ app.get('/not_auth', (req, res) => {
 =================================================================================
 */
 app.post('/urls', (req, res) => {
-  if (req.cookies.user_id === undefined) {
+  const { user_id } = req.session;
+  const { longURL } = req.body;
+  if (user_id === undefined) {
     res.sendStatus(403);
-  } else if (req.cookies.user_id) {
+  } else if (user_id) {
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = {
-      longURL: req.body.longURL,
-      userID: req.cookies.user_id
+      longURL,
+      userID: user_id
     };
     res.redirect(`/urls/${shortURL}`);
   }
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const userCookie = req.cookies.user_id;
-  if (urlDatabase[req.params.shortURL] === undefined) {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (urlDatabase[shortURL] === undefined) {
     res.sendStatus(404);
     res.redirect('/urls');
-  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+  } else if (user_id !== urlDatabase[shortURL].userID) {
     res.sendStatus(403);
     res.redirect('/urls');
-  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
-    const shortURL = req.params.shortURL;
+  } else if (user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
     res.redirect('/urls');
   }
 });
 
 app.post('/urls/:shortURL/edit', (req, res) => {
-  const userCookie = req.cookies.user_id;
-  if (urlDatabase[req.params.shortURL] === undefined) {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (urlDatabase[shortURL] === undefined) {
     res.sendStatus(404);
     res.redirect('/urls');
-  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+  } else if (user_id !== urlDatabase[shortURL].userID) {
     res.sendStatus(403);
     res.redirect('/urls');
-  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
-    const shortURL = req.params.shortURL;
+  } else if (user_id === urlDatabase[shortURL].userID) {
     res.redirect(`/urls/${shortURL}`);
   }
 });
 
 app.post('/urls/:shortURL/updated', (req, res) => {
-  const userCookie = req.cookies.user_id;
-  if (urlDatabase[req.params.shortURL] === undefined) {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (urlDatabase[shortURL] === undefined) {
     res.sendStatus(404);
     res.redirect('/urls');
-  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+  } else if (user_id !== urlDatabase[shortURL].userID) {
     res.sendStatus(403);
     res.redirect('/urls');
-  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
-    const newLongURL = req.body.longURL;
-    const shortURL = req.params.shortURL;
+  } else if (user_id === urlDatabase[shortURL].userID) {
+    const { newLongURL } = req.body;
     urlDatabase[shortURL].longURL = newLongURL;
     res.redirect(`/urls/${shortURL}`);
   }
@@ -206,18 +213,18 @@ app.post('/login', (req, res) => {
     const userID = getUserID(users, email);
     const hashMatch = bcrypt.compareSync(password, users[userID].password);
     if (hashMatch) {
-      res.cookie('user_id', userID);
+      req.session.user_id = userID;
       res.redirect('/urls');
-    } else if (users[userID].password !== password) {
+    } else if (!hashMatch) {
       res.sendStatus(403);
     }
-  } else if (!hashMatch) {
+  } else if (verifyNewEmail(users, email)) {
     res.sendStatus(403);
   }
 });
 
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect('/urls');
 });
 
@@ -228,15 +235,14 @@ app.post('/register', (req, res) => {
   } else if (verifyNewEmail(users, email)) {
     const userEmail = email.toLowerCase();
     const userPassword = bcrypt.hashSync(password, 10);
-    const userId = generateRandomString();
+    const userID = generateRandomString();
     const userObj = {
-      id: userId,
+      id: userID,
       email: userEmail,
       password: userPassword,
     };
-    users[userId] = userObj;
-    console.log(users[userId]);
-    res.cookie('user_id', userId);
+    users[userID] = userObj;
+    req.session.user_id = userID;
     res.redirect('/urls');
   } else if (!verifyNewEmail(users, email)) {
     res.sendStatus(400);
