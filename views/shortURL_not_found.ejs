@@ -1,0 +1,15 @@
+<%- include('./partials/_head') %>
+  <title>Unauthorized - TinyApp</title>
+</head>
+<body style="width: 100vw;">
+  <header>
+    <%- include('partials/_header') %>
+  </header>
+  <main class="card" style="display: flex; align-items: center;flex-direction: column; padding:0;">
+    <h2 class="card-header" style="text-align: center; color: gray; width: 100%">Invalid Short URL</h2>
+    <div class="card-body">
+      <h4 style="text-align: center;">This short URL has not been created!</h4>
+      <h6 style="text-align: center;">Click "Create New URL" to create one.</h4>
+    </div>
+  </main>
+  <%- include('partials/_bodyScripts') %>

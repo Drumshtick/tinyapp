@@ -3,6 +3,17 @@
 ********************************Helper Functions*********************************
 =================================================================================
 */
+const lengthOfMiniURL = 6;
+
+const addProtocol= (url) => {
+  if (url.substr(0,7) === 'http://') {
+    return url;
+  } else if (url.substr(0,8) === 'https://') {
+    return url;
+  }
+  return `https://${url}`;
+};
+
 const generateRandomString = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let miniURL = '';
@@ -39,4 +50,4 @@ const filterURLsByID = (database, id) => {
   }
   return filtered;
 };
-module.exports = { generateRandomString, verifyNewEmail, getUserByEmail, filterURLsByID };
+module.exports = { generateRandomString, verifyNewEmail, getUserByEmail, filterURLsByID, addProtocol };
