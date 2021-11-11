@@ -25,16 +25,19 @@ const urlDatabase = {
   }
 };
 
+const user1Pass = bcrypt.hashSync('123', 10)
+const user2Pass = bcrypt.hashSync('asd', 10)
+
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "123"
+    password: user1Pass,
   },
   "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "asd"
+    password: user2Pass,
   }
 }
 /*
@@ -190,19 +193,19 @@ app.post('/urls/:shortURL/updated', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
   if (!email || !password) {
     res.sendStatus(400);
   } else if (!verifyNewEmail(users, email)) {
     const userID = getUserID(users, email);
-    if (users[userID].password === password) {  // users[userID] === undefined ERROR
+    const hashMatch = bcrypt.compareSync(password, users[userID].password);
+    if (hashMatch) {
       res.cookie('user_id', userID);
       res.redirect('/urls');
     } else if (users[userID].password !== password) {
       res.sendStatus(403);
     }
-  } else if (verifyNewEmail(users, email)) {
+  } else if (!hashMatch) {
     res.sendStatus(403);
   }
 });
@@ -219,7 +222,6 @@ app.post('/register', (req, res) => {
   } else if (verifyNewEmail(users, email)) {
     const userEmail = email.toLowerCase();
     const userPassword = bcrypt.hashSync(password, 10);
-    console.log(userPassword);
     const userId = generateRandomString();
     const userObj = {
       id: userId,
@@ -227,6 +229,7 @@ app.post('/register', (req, res) => {
       password: userPassword,
     };
     users[userId] = userObj;
+    console.log(users[userId]);
     res.cookie('user_id', userId);
     res.redirect('/urls');
   } else if (!verifyNewEmail(users, email)) {
