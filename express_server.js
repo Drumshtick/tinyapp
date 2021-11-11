@@ -48,10 +48,7 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   const userID = req.cookies.user_id;
   if (userID === undefined) {
-    const templateVars = {
-      userObj: users[userID],
-    };
-    res.render('my_urls_no_cred', templateVars);
+    res.redirect('/no_cred');
   } else if (userID) {
     const templateVars = { 
       userObj: users[userID],
@@ -76,12 +73,20 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    userObj: users[req.cookies.user_id],
-  };
-  res.render('urls_show', templateVars);
+  const userCookie = req.cookies.user_id;
+  if (!userCookie) {
+    res.redirect('/no_cred')
+  } else if (userCookie !== urlDatabase[req.params.shortURL].userID) {
+    const templateVars = {userObj: users[userCookie]};
+    res.render('not_auth', templateVars);
+  } else if (userCookie === urlDatabase[req.params.shortURL].userID) {
+    const templateVars = {
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL].longURL,
+      userObj: users[userCookie],
+    };
+    res.render('urls_show', templateVars);
+  }
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -105,6 +110,13 @@ app.get('/login', (req, res) => {
     userObj: users[req.cookies.user_id],
   };
   res.render('login', templateVars);
+});
+app.get('/no_cred', (req, res) => {
+  const userID = req.cookies.user_id;
+  const templateVars = {
+    userObj: users[userID],
+  };
+  res.render('no_cred', templateVars);
 });
 /*
 =================================================================================
