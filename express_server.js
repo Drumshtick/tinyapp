@@ -4,10 +4,8 @@ const PORT = 8080; // default port 8080
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-var methodOverride = require('method-override');
 const { generateRandomString, verifyNewEmail, getUserByEmail, filterURLsByID, addProtocol } = require('./helpers');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['1L0V3C00K135'],
