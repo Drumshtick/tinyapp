@@ -233,6 +233,7 @@ app.post('/urls', (req, res) => {
   }
 });
 /*
+<<<<<<< HEAD
 Receives from delete button on /urls page
 deletes data if user id matches cookie and url
 exists
@@ -267,6 +268,8 @@ app.post('/urls/:shortURL', (req, res) => {
   }
 });
 /*
+=======
+>>>>>>> feature/RESTful
 login page form
 checks to ensure email and password arent empty
 checks to see if account exists
@@ -324,7 +327,50 @@ app.post('/register', (req, res) => {
     res.redirect(400, '/login');
   }
 });
-
+/*
+=================================================================================
+**1************************************PUT***************************************
+=================================================================================
+*/
+/*
+The longURL edit form on urls_show POSTs to this branch
+which will update the database with the new URL
+*/
+app.put('/urls/:shortURL', (req, res) => {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (!urlDatabase[shortURL]) {
+    res.redirect(404, '/urls');
+  } else if (user_id !== urlDatabase[shortURL].userID) {
+    res.redirect(403, '/urls');
+  } else if (user_id === urlDatabase[shortURL].userID) {
+    const newLongURL = req.body.longURL;
+    urlDatabase[shortURL].longURL = newLongURL;
+    res.redirect(`/urls/${shortURL}`);
+  }
+});
+/*
+=================================================================================
+************************************DELETE***************************************
+=================================================================================
+*/
+/*
+Receives from delete button on /urls page
+deletes data if user id matches cookie and url
+exists
+*/
+app.delete('/urls/:shortURL/delete', (req, res) => {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (!urlDatabase[shortURL]) {
+    res.redirect(404, '/urls');
+  } else if (user_id !== urlDatabase[shortURL].userID) {
+    res.sendStatus(403);
+  } else if (user_id === urlDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  }
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
