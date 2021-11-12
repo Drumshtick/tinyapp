@@ -133,6 +133,21 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(addProtocol(longURL));
 });
 /*
+Form edit button from /urls
+redirects to urls_show to change url
+*/
+app.get('/urls/:shortURL/edit', (req, res) => {
+  const { user_id } = req.session;
+  const { shortURL } = req.params;
+  if (!urlDatabase[shortURL]) {
+    res.redirect(404, '/urls');
+  } else if (user_id !== urlDatabase[shortURL].userID) {
+    res.redirect(403, '/urls');
+  } else if (user_id === urlDatabase[shortURL].userID) {
+    res.redirect(`/urls/${shortURL}`);
+  }
+});
+/*
 Serves register page
 if logged in redirect to urls
 */
@@ -232,21 +247,6 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   } else if (user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
     res.redirect('/urls');
-  }
-});
-/*
-Form edit button from /urls
-redirects to urls_show to change url
-*/
-app.post('/urls/:shortURL/edit', (req, res) => {
-  const { user_id } = req.session;
-  const { shortURL } = req.params;
-  if (!urlDatabase[shortURL]) {
-    res.redirect(404, '/urls');
-  } else if (user_id !== urlDatabase[shortURL].userID) {
-    res.redirect(403, '/urls');
-  } else if (user_id === urlDatabase[shortURL].userID) {
-    res.redirect(`/urls/${shortURL}`);
   }
 });
 /*
